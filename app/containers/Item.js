@@ -1,7 +1,6 @@
 var React = require('react');
 var Cell = require('../components/Cell');
 
-
  export default class Item{
   constructor(x,y,bounds){
     this.position={

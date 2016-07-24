@@ -18,6 +18,7 @@ var GameContainer = React.createClass({
   },
 
   update: function(){
+    this.player.update();
     var newPosition = this.player.getPosition();
     this.updateEnemies();
     this.checkCollisions();
@@ -27,13 +28,15 @@ var GameContainer = React.createClass({
   },
 
   updateEnemies: function(){
-    for (var i=0; i< this.enemies.length; i++){
-      var currEnemy = this.enemies[i];
-      var pos = currEnemy.getPosition();
-      this.board[pos.y][pos.x] = <Cell type='empty' key={this.getKey(pos)} />
-      currEnemy.update();
-      var newPos = currEnemy.getPosition();
-      this.board[newPos.y][newPos.x] = currEnemy.draw();
+    for (var i=0; i< this.objects.length; i++){
+      if (this.objects[i].constructor.name == "Enemy"){
+        var currEnemy = this.objects[i];
+        var pos = currEnemy.getPosition();
+        this.board[pos.y][pos.x] = <Cell type='empty' key={this.getKey(pos)} />
+        currEnemy.update(this.board);
+        var newPos = currEnemy.getPosition();
+        this.board[newPos.y][newPos.x] = currEnemy.draw();
+      }
     }
   },
 
@@ -49,6 +52,15 @@ var GameContainer = React.createClass({
           obj.onCollision(obj2);
           if (obj.isItem()){
             toRemove.push(i);
+          }
+          if (obj.isDead()){
+            toRemove.push(i);
+            if (obj.constructor.name == 'player'){
+              this.gameOver();
+            }
+            else{
+              this.player.giveExperience(obj.getLevel());
+            }
           }
         }
       }
@@ -73,16 +85,32 @@ var GameContainer = React.createClass({
     var DOWN = 40;
     var keyCode = e.keyCode;
     if (keyCode == UP){
-      this.player.moveUp();
+      var dir = {
+        x: 0,
+        y: -1
+      }
+      this.player.move(dir, this.board);
     }
     if (keyCode == RIGHT){
-      this.player.moveRight();
+      var dir = {
+        x: 1,
+        y: 0
+      }
+      this.player.move(dir, this.board);
     }
     if (keyCode == LEFT){
-      this.player.moveLeft();
+      var dir = {
+        x: -1,
+        y: 0
+      }
+      this.player.move(dir, this.board);
     }
     if (keyCode == DOWN){
-      this.player.moveDown();
+      var dir = {
+        x: 0,
+        y: 1
+      }
+      this.player.move(dir, this.board);
     }
 
   },
@@ -100,40 +128,32 @@ var GameContainer = React.createClass({
     this.startGame();
   },
 
-  createItems: function(){
-    var N_POTIONS = 5;
-    for (var i=0; i < N_POTIONS; i++){
+  createType(type, num){
+    for (var i=0; i < num; i++){
       var placed = false;
       while(!placed){
         var x = Math.floor(Math.random() * this.DIM);
         var y = Math.floor(Math.random() * this.DIM);
         if (this.board[y][x].props.type == 'empty'){
-          var newPotion = new Potion(x,y, this.DIM);
-          this.objects.push(newPotion);
-          this.board[y][x] = newPotion.draw();
+          var newObj = new type(x,y, this.DIM);
+          this.objects.push(newObj);
+          this.board[y][x] = newObj.draw();
           placed = true;
         }
       }
     }
   },
 
+  createItems: function(){
+    var N_POTIONS = 5;
+    var N_KEYS = 5;
+    this.createType(Potion, N_POTIONS);
+    this.createType(Key, N_KEYS);
+  },
+
   createEnemies:function(){
     var N_ENEMIES = 5;
-    this.enemies=[];
-    for (var i=0; i < N_ENEMIES; i++){
-      var placed = false;
-      while (!placed){
-        var x = Math.floor(Math.random() * this.DIM);
-        var y = Math.floor(Math.random() * this.DIM);
-        if (this.board[y][x].props.type == 'empty'){
-          var newEnemy = new Enemy(x,y, this.DIM);
-          this.enemies.push(newEnemy);
-          this.objects.push(newEnemy);
-          this.board[y][x] = newEnemy.draw();
-          placed = true;
-        }
-      }
-    }
+    this.createType(Enemy, N_ENEMIES);
   },
 
   startGame: function(){
@@ -188,15 +208,24 @@ var GameContainer = React.createClass({
       array[i]=[];
       for (var j=0; j < cols; j++){
         var position = {x: j, y: i};
-        array[i][j] = <Cell type='empty' key={this.getKey(position)}/>
+        if (i==0 || j==0 || i==this.DIM-1 || j==this.DIM-1){
+          array[i][j] = <Cell type='obstacle' key={this.getKey(position)}/>
+        }
+        else {
+          array[i][j] = <Cell type='empty' key={this.getKey(position)}/>
+        }
       }
     }
     return array;
   },
 
   render: function(){
+    var flash=null;
+    if (this.player.getDamaged()){
+      flash='flash';
+    }
     return(
-      <div>
+      <div className={flash}>
         <h1 className='title'>Realtime React</h1>
         <Display health={this.player.getHealth()}
           maxHealth={this.player.getMaxHealth()}

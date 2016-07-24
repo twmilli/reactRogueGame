@@ -13,7 +13,9 @@ export default class Enemy{
     this.dir = 1;
     this.speed = 1;
     this.time = Date.now();
-    this.attack = 1;
+    this.attack = 10;
+    this.health = 30;
+    this.level = 1;
   }
 
   draw(){
@@ -24,24 +26,23 @@ export default class Enemy{
     return(this.position);
   }
 
-  update(){
+  update(board){
     var interval = 100;
     var delta = Date.now() - this.time;
     if (delta < interval){
       return;
     }
     this.position.y += this.dir;
+    var type = board[this.position.y][this.position.x].props.type
+    if (type != 'empty'){
+      this.y -= this.dir
+    }
     this.accum++;
     if (this.accum == this.end){
       this.accum=0;
       this.dir = this.dir*-1;
     }
-    if (this.y > this.bounds){
-      this.y = this.bounds - 1;
-    }
-    if (this.position.y < 0){
-      this.y=0;
-    }
+
     this.time=Date.now();
   }
 
@@ -57,5 +58,13 @@ export default class Enemy{
 
   getAttack(){
     return (this.attack);
+  }
+
+  getLevel(){
+    return (this.level);
+  }
+
+  isDead(){
+    return (this.health <= 0);
   }
 }

@@ -1,5 +1,6 @@
 $player: #3674ff;
-$empty: rgb(187, 188, 190);
+$empty: rgb(236, 238, 241);
+$obstacle: rgb(143, 147, 143);
 $enemy: rgb(246, 57, 57);
 
 $cell: 15px;
@@ -7,6 +8,10 @@ $game: $cell*50;
 
 $border: 5px solid black;
 $inventory: 20rem;
+
+.flash{
+  background-color: rgb(252, 25, 10);
+}
 
 .game{
   margin: auto;
@@ -34,9 +39,19 @@ $inventory: 20rem;
   background-color: $enemy;
 }
 
+.obstacle{
+  @extend .empty;
+  background-color: $obstacle;
+}
+
 .potion{
   @extend .empty;
   content: url('../assets/potion.png');
+}
+
+.key{
+  @extend .empty;
+  content: url('../assets/key.jpg');
 }
 
 .title{
