@@ -1,10 +1,11 @@
 var React = require('react');
-var Player = require('./Player');
+import Player from './Player';
 var Cell = require('../components/Cell');
 var Inventory = require('../components/Inventory');
 var Display = require('../components/Display');
-var Enemy = require('./Enemy');
-var Potion = require('./Potion');
+import Enemy from './Enemy';
+import Potion from './Potion';
+import Key from './Key';
 
 var GameContainer = React.createClass({
 
@@ -52,7 +53,6 @@ var GameContainer = React.createClass({
         }
       }
     }
-    console.log(toRemove);
     for (var i=0; i<toRemove.length; i++){
       var index = toRemove[i];
       this.objects.splice(index,1);

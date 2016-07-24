@@ -2,10 +2,9 @@ var React = require('react');
 var Cell = require('../components/Cell');
 import Item from './Item';
 
-export default class Potion extends Item{
-  constructor(x,y,bounds){
+export default class Key extends Item {
+  constructor(x,y,bounds) {
     super(x,y,bounds);
-    this.health=10;
-    this.type='potion';
+    this.type = 'key';
   }
 }
