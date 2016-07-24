@@ -1,0 +1,78 @@
+$player: #3674ff;
+$empty: rgb(187, 188, 190);
+$enemy: rgb(246, 57, 57);
+
+$cell: 15px;
+$game: $cell*50;
+
+$border: 5px solid black;
+$inventory: 20rem;
+
+.game{
+  margin: auto;
+  display: inline-block;
+  width: $game;
+  height: $game;
+  border: $border;
+}
+
+.empty{
+  float: left;
+  display: inline-block;
+  width: $cell;
+  height: $cell;
+  background-color: $empty;
+}
+
+.player{
+  @extend .empty;
+  background-color: $player;
+}
+
+.enemy{
+  @extend .empty;
+  background-color: $enemy;
+}
+
+.potion{
+  @extend .empty;
+  content: url('../assets/potion.png');
+}
+
+.title{
+  margin: auto;
+  text-align: center;
+  padding: 1rem;
+}
+
+.inventory{
+
+  h2{
+    text-align: center;
+  }
+  width: $inventory;
+  display: inline-block;
+  float: left;
+  margin: 2rem;
+  text-align: left;
+  border:$border;
+  height: 20rem;
+}
+
+.display{
+  font-size: 1.5em;
+  width: 70rem;
+  margin:auto;
+  .label{
+    padding: 0.5rem;
+  }
+
+  .bar{
+    padding: 0.5rem;
+    width: 10rem;
+  }
+  .progressbar-container{
+    outline: 1px solid black;
+  }
+
+}
