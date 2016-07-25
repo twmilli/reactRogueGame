@@ -35,7 +35,7 @@ export default class Enemy{
     this.position.y += this.dir;
     var type = board[this.position.y][this.position.x].props.type
     if (type != 'empty'){
-      this.y -= this.dir
+      this.y -= this.dir;
     }
     this.accum++;
     if (this.accum == this.end){

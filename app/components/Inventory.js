@@ -1,16 +1,17 @@
 var React = require('react');
+var Cell = require('./Cell');
 
 var Inventory = function(props){
   var items = props.items.map(function(item, key){
-    return(<li key={key}>{item.toString()}</li>)
+    return(item.display(key, props.onItemClick));
   });
   return(
     <div className='inventory'>
     <h2>Inventory</h2>
 
-    <ul>
-      {items}
-    </ul>
+      <div>
+        {items}
+      </div>
     </div>
   )
 }

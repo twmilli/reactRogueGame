@@ -1,7 +1,7 @@
 var React = require('react');
 var Progress = require('react-progressbar');
 
-var Display = React.createClass({
+var PlayerDisplay = React.createClass({
   shouldComponentUpdate: function(nextProps){
     for (var prop in this.props){
       if (this.props[prop] != nextProps[prop]){
@@ -13,17 +13,23 @@ var Display = React.createClass({
 
   render: function(){
     return(
-      <div className='display'>
+      <div className='player-display'>
+        <div className='name'>
+          <div className="player">
+          </div>
+          {this.props.name}</div>
         <div className='label'>Weapon: {this.props.weapon}</div>
         <div className='label'>Level: {this.props.level}</div>
         <div className='bar'>Health: <Progress completed={(this.props.health/this.props.maxHealth)*100} /></div>
         <div className='bar'>
-          XP:
-          <Progress completed={(this.props.exp/this.props.expNeeded)*100} />
+          XP:<Progress completed={(this.props.exp/this.props.expNeeded)*100} />
+        </div>
+        <div className='key-text'>
+          <div className='key'></div> {this.props.totalKeys}/{this.props.totalKeys}
         </div>
       </div>
     )
   }
-})
+});
 
-module.exports = Display;
+module.exports = PlayerDisplay;

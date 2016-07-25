@@ -2,7 +2,8 @@ var React = require('react');
 import Player from './Player';
 var Cell = require('../components/Cell');
 var Inventory = require('../components/Inventory');
-var Display = require('../components/Display');
+var GameDisplay = require('../components/GameDisplay');
+var PlayerDisplay = require('../components/PlayerDisplay');
 import Enemy from './Enemy';
 import Potion from './Potion';
 import Key from './Key';
@@ -53,7 +54,7 @@ var GameContainer = React.createClass({
           if (obj.isItem()){
             toRemove.push(i);
           }
-          if (obj.isDead()){
+          else if (obj.isDead()){
             toRemove.push(i);
             if (obj.constructor.name == 'player'){
               this.gameOver();
@@ -119,6 +120,7 @@ var GameContainer = React.createClass({
     this.DIM = 80;
     this.board = this.createBoard(this.DIM,this.DIM);
     this.objects = [];
+    this.createWalls();
     this.createEnemies();
     this.createItems();
     this.player = new Player(this.DIM);
@@ -144,9 +146,29 @@ var GameContainer = React.createClass({
     }
   },
 
+  createWalls(){
+    var N_WALLS = 15;
+    var MAX_SIZE = 10;
+    for (var i=0; i < N_WALLS; i++){
+      var directions=[{x: 1, y:0}, {x: 0, y:1}];
+      var dir = directions[Math.floor(Math.random() * directions.length)];
+      var startX = Math.floor(Math.random() * (this.DIM-(MAX_SIZE*2))) + MAX_SIZE;
+      var startY = Math.floor(Math.random() * (this.DIM-(MAX_SIZE*2))) + MAX_SIZE;
+      var startPos = {x: startX, y: startY}
+      this.board[startY][startX] = <Cell type='obstacle' key={this.getKey(startPos)}/>;
+      for (var j=0; j < MAX_SIZE; j++){
+        var x = startX + (dir.x*j);
+        var y = startY + (dir.y*j);
+        var pos = {x: x, y: y};
+        this.board[y][x] = <Cell type='obstacle' key={this.getKey(pos)}/>;
+      }
+    }
+  },
+
   createItems: function(){
     var N_POTIONS = 5;
     var N_KEYS = 5;
+    this.totalKeys = N_KEYS;
     this.createType(Potion, N_POTIONS);
     this.createType(Key, N_KEYS);
   },
@@ -202,6 +224,10 @@ var GameContainer = React.createClass({
     });
   },
 
+  handleItemClick: function(e){
+    this.player.useItem(e.currentTarget.id);
+  },
+
   createBoard: function(rows, cols){
     var array = [], row=[];
     for (var i=0; i < rows; i++){
@@ -227,16 +253,22 @@ var GameContainer = React.createClass({
     return(
       <div className={flash}>
         <h1 className='title'>Realtime React</h1>
-        <Display health={this.player.getHealth()}
+        <PlayerDisplay health={this.player.getHealth()}
           maxHealth={this.player.getMaxHealth()}
           weapon = {this.player.getWeapon()}
           level={this.player.getLevel()}
           exp={this.player.getExperience()}
           expNeeded = {this.player.getExperienceNeeded()}/>
+
+        <GameDisplay
+          totalKeys = {this.totalKeys}
+          level={this.level}
+          enemiesKilled={this.player.getEnemiesKilled()}
+          totalEnemies={this.totalEnemies}/>
         <div className='game'>
           {this.getDrawBoard(this.board)}
         </div>
-        <Inventory items= {this.player.getItems()}/>
+        <Inventory items= {this.player.getItems()} onItemClick={this.handleItemClick}/>
       </div>
     )
   }

@@ -30,4 +30,15 @@ var Cell = require('../components/Cell');
 
   }
 
+  display(num,onClick){
+    return (<div className={this.toString() + '-display'}
+    key={this.position.x+this.position.y*this.bounds}
+    onClick={onClick}
+    id={num}/>);
+  }
+
+  use(player){
+    
+  }
+
 }

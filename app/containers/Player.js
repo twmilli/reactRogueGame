@@ -17,6 +17,7 @@ export default class Player {
     this.experience = 0;
     this.level = 1;
     this.damaged = false;
+    this.enemiesKilled = 0;
   }
 
   getPosition(){
@@ -95,6 +96,7 @@ export default class Player {
     return (this.health <= 0);
   }
   giveExperience(level){
+    this.enemiesKilled += 1;
     const FACTOR = 10;
     this.experience += level * FACTOR;
     if (this.experience > this.getExperienceNeeded()){
@@ -109,5 +111,14 @@ export default class Player {
     this.attack *= FACTOR;
     this.health += FACTOR;
     this.maxHealth += FACTOR;
+  }
+
+  useItem(index){
+    var item = this.items.splice(index, 1)[0];
+    item.use(this);
+  }
+
+  getEnemiesKilled(){
+    return (this.enemiesKilled);
   }
 }

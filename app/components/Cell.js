@@ -7,7 +7,7 @@ var Cell = React.createClass({
 
   render: function(){
     return(
-      <div className = {this.props.type}></div>
+      <div className = {this.props.type} onClick={this.props.onClick}></div>
     )
   }
 
