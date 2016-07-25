@@ -7,6 +7,8 @@ var PlayerDisplay = require('../components/PlayerDisplay');
 import Enemy from './Enemy';
 import Potion from './Potion';
 import Key from './Key';
+import Weapon from './Weapon';
+import WeaponFactory from './WeaponFactory';
 
 var GameContainer = React.createClass({
 
@@ -24,8 +26,29 @@ var GameContainer = React.createClass({
     this.updateEnemies();
     this.checkCollisions();
     this.board[newPosition.y][newPosition.x] = this.player.draw();
-
+    if (this.isLevelComplete()){
+      this.startLevel();
+    }
     this.forceUpdate();
+  },
+
+  isLevelComplete: function(){
+    return ((this.player.getEnemiesKilled() == this.totalEnemies) && (this.totalKeys == this.player.getKeys()));
+  },
+
+  startLevel: function(){
+    this.player.reset();
+    this.board = this.createBoard(this.DIM, this.DIM);
+    this.objects = [];
+    this.level += 1;
+    this.createWalls();
+    this.createEnemies();
+    this.createItems();
+    this.createWeapon();
+    this.objects.push(this.player);
+    this.player.setPosition(this.DIM/2, this.DIM/2);
+    var playerPosition = this.player.getPosition();
+    this.board[playerPosition.y][playerPosition.x] = this.player.draw();
   },
 
   updateEnemies: function(){
@@ -120,9 +143,11 @@ var GameContainer = React.createClass({
     this.DIM = 80;
     this.board = this.createBoard(this.DIM,this.DIM);
     this.objects = [];
+    this.level = 1;
     this.createWalls();
     this.createEnemies();
     this.createItems();
+    this.createWeapon();
     this.player = new Player(this.DIM);
     this.objects.push(this.player);
     var playerPosition = this.player.getPosition();
@@ -130,14 +155,18 @@ var GameContainer = React.createClass({
     this.startGame();
   },
 
-  createType(type, num){
+  createWeapon(){
+    this.createType(Weapon, 1, WeaponFactory.getTypeObject('sword'));
+  },
+
+  createType(type, num, arg1){
     for (var i=0; i < num; i++){
       var placed = false;
       while(!placed){
         var x = Math.floor(Math.random() * this.DIM);
         var y = Math.floor(Math.random() * this.DIM);
         if (this.board[y][x].props.type == 'empty'){
-          var newObj = new type(x,y, this.DIM);
+          var newObj = new type(x,y, this.DIM, arg1);
           this.objects.push(newObj);
           this.board[y][x] = newObj.draw();
           placed = true;
@@ -147,7 +176,7 @@ var GameContainer = React.createClass({
   },
 
   createWalls(){
-    var N_WALLS = 15;
+    var N_WALLS = 15 * this.level;
     var MAX_SIZE = 10;
     for (var i=0; i < N_WALLS; i++){
       var directions=[{x: 1, y:0}, {x: 0, y:1}];
@@ -167,7 +196,7 @@ var GameContainer = React.createClass({
 
   createItems: function(){
     var N_POTIONS = 5;
-    var N_KEYS = 5;
+    var N_KEYS = 5 * this.level;
     this.totalKeys = N_KEYS;
     this.createType(Potion, N_POTIONS);
     this.createType(Key, N_KEYS);
@@ -175,7 +204,8 @@ var GameContainer = React.createClass({
 
   createEnemies:function(){
     var N_ENEMIES = 5;
-    this.createType(Enemy, N_ENEMIES);
+    this.totalEnemies = N_ENEMIES;
+    this.createType(Enemy, N_ENEMIES, this.level);
   },
 
   startGame: function(){
@@ -192,8 +222,8 @@ var GameContainer = React.createClass({
   },
 
   getBounds: function(){
-    var WIDTH = 50;
-    var HEIGHT = 50;
+    var WIDTH = 40;
+    var HEIGHT = 40;
     var pos =  this.player.getPosition();
     var minX = pos.x - WIDTH/2;
     var maxX = pos.x + WIDTH/2;
@@ -252,19 +282,18 @@ var GameContainer = React.createClass({
     }
     return(
       <div className={flash}>
-        <h1 className='title'>Realtime React</h1>
+        <GameDisplay
+            totalKeys = {this.totalKeys}
+            keysFound = {this.player.getKeys()}
+            level={this.level}
+            enemiesKilled={this.player.getEnemiesKilled()}
+            totalEnemies={this.totalEnemies}/>
         <PlayerDisplay health={this.player.getHealth()}
           maxHealth={this.player.getMaxHealth()}
-          weapon = {this.player.getWeapon()}
+          weapon = {this.player.getWeapon().toString()}
           level={this.player.getLevel()}
           exp={this.player.getExperience()}
           expNeeded = {this.player.getExperienceNeeded()}/>
-
-        <GameDisplay
-          totalKeys = {this.totalKeys}
-          level={this.level}
-          enemiesKilled={this.player.getEnemiesKilled()}
-          totalEnemies={this.totalEnemies}/>
         <div className='game'>
           {this.getDrawBoard(this.board)}
         </div>

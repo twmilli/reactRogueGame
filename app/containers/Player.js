@@ -1,6 +1,7 @@
 var React = require('react');
 var Cell = require('../components/Cell');
 import Enemy from './Enemy';
+import WeaponFactory from './WeaponFactory';
 
 
 export default class Player {
@@ -11,13 +12,14 @@ export default class Player {
     this.health = 100;
     this.maxHealth = 100;
     this.bounds = bounds;
-    this.weapon = 'sword';
+    this.weapon = WeaponFactory.create('fist');
     this.attack = 10;
     this.items=[];
     this.experience = 0;
     this.level = 1;
     this.damaged = false;
-    this.enemiesKilled = 0;
+    this.enemiesKilled = 5;
+    this.keys=4;
   }
 
   getPosition(){
@@ -89,7 +91,7 @@ export default class Player {
   }
 
   getAttack(){
-    return (this.attack);
+    return (this.attack + this.weapon.getAttack());
   }
 
   isDead(){
@@ -103,6 +105,12 @@ export default class Player {
       this.experience -= this.getExperienceNeeded();
       this.levelUp();
     }
+  }
+
+  reset(){
+    this.keys = 0;
+    this.health = this.maxHealth;
+    this.enemiesKilled = 0;
   }
 
   levelUp(){
@@ -120,5 +128,22 @@ export default class Player {
 
   getEnemiesKilled(){
     return (this.enemiesKilled);
+  }
+
+  getKeys(){
+    return (this.keys);
+  }
+
+  addItem(item){
+    this.items.push(item);
+  }
+
+  getWeapon(){
+    return (this.weapon);
+  }
+
+  setPosition(x,y){
+    this.position.x = x;
+    this.position.y = y;
   }
 }

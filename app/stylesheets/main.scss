@@ -3,11 +3,11 @@ $empty: white;
 $obstacle: rgb(143, 147, 143);
 $enemy: rgb(246, 57, 57);
 
-$cell: 15px;
-$game: $cell*50;
+$cell: 1rem;
+$game: $cell*40;
 
 $border: 5px solid black;
-$inventory: 20rem;
+$inventory: 15rem;
 $item: $inventory/5;
 
 .flash{
@@ -55,6 +55,16 @@ $item: $inventory/5;
   content: url('../assets/key.jpg');
 }
 
+.sword{
+  @extend .empty;
+  content: url('../assets/sword.png');
+}
+
+.fist{
+  @extend .empty;
+  content: url('../assets/fist.png');
+}
+
 .title{
   margin: auto;
   text-align: center;
@@ -69,16 +79,16 @@ $item: $inventory/5;
   width: $inventory;
   display: inline-block;
   float: left;
-  margin: 2rem;
+  margin: $inventory - $game 1rem 1rem 1rem;
   text-align: left;
   border:$border;
-  height: $inventory;
+  height: $inventory + 5rem;
 
   .item{
     width: $item;
     height: $item;
     margin: 2px;
-    padding: 5px;
+    padding: 2px;
     &:hover{
       outline: 2px #81fe5d solid;
       cursor: pointer;
@@ -88,45 +98,57 @@ $item: $inventory/5;
   .key-display{
     @extend .key;
     @extend .item;
-
   }
 
   .potion-display{
     @extend .potion;
     @extend .item;
   }
+
+  .sword-display{
+    @extend .sword;
+    @extend .item;
+  }
+
+  .fist-display{
+    @extend .fist;
+    @extend .item;
+  }
 }
 
 .player-display{
-  font-size: 1.5em;
-  width: 100%;
+  @extend .inventory;
+  margin-top: auto;
+  height: $inventory;
   .label{
     padding: 1rem;
-    display: inline-block;
   }
 
   .bar{
     padding: 1rem;
     width: 10rem;
-    display: inline-block;
   }
   .progressbar-container{
     outline: 1px solid black;
     width: 100%;
-    display: inline-block;
   }
 }
 
 .game-display{
+  font-size: 1.5em;
   .label{
     padding: 1rem;
     display: inline-block;
+
   }
   .key{
     width: $cell*2;
     height: $cell*2;
+    display: inline-block;
   }
-  margin-left: 2rem;
-  display: inline-block;
-  text-align: center;
+
+  .enemy{
+    display: inline-block;
+    margin: 5px;
+  }
 }

@@ -7,4 +7,8 @@ export default class Key extends Item {
     super(x,y,bounds);
     this.type = 'key';
   }
+
+  use(player){
+    player.keys += 1;
+  }
 }

@@ -2,7 +2,7 @@ var React = require('react');
 var Cell = require('../components/Cell');
 
 export default class Enemy{
-  constructor(x,y,bounds){
+  constructor(x,y,bounds, level){
     this.position={
       x: x,
       y: y
@@ -15,7 +15,8 @@ export default class Enemy{
     this.time = Date.now();
     this.attack = 10;
     this.health = 30;
-    this.level = 1;
+    this.level = level || 1;
+    console.log(this.level);
   }
 
   draw(){
@@ -33,9 +34,9 @@ export default class Enemy{
       return;
     }
     this.position.y += this.dir;
-    var type = board[this.position.y][this.position.x].props.type
-    if (type != 'empty'){
-      this.y -= this.dir;
+    var type = board[this.position.y][this.position.x].props.type;
+    if (type != 'empty' && type != 'player'){
+      this.position.y -= this.dir;
     }
     this.accum++;
     if (this.accum == this.end){

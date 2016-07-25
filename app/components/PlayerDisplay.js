@@ -24,9 +24,6 @@ var PlayerDisplay = React.createClass({
         <div className='bar'>
           XP:<Progress completed={(this.props.exp/this.props.expNeeded)*100} />
         </div>
-        <div className='key-text'>
-          <div className='key'></div> {this.props.totalKeys}/{this.props.totalKeys}
-        </div>
       </div>
     )
   }

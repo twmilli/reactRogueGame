@@ -14,8 +14,13 @@ var GameDisplay = React.createClass({
     return(
       <div className='game-display'>
         <div className='label'>Level: {this.props.level}</div>
-        <div className='key'></div> {this.props.keysFound}/{this.props.totalKeys}
-        <div className='enemy'></div> {this.props.enemiesKilled}/{this.props.totalEnemies}
+        <div className='label'>
+          <div className='key'></div>
+          {this.props.keysFound}/{this.props.totalKeys}
+        </div>
+        <div className='label'>
+          <div className='enemy'></div> {this.props.enemiesKilled}/{this.props.totalEnemies}
+        </div>
       </div>
     )
   }
