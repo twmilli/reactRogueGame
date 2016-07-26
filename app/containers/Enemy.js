@@ -16,7 +16,6 @@ export default class Enemy{
     this.attack = 10;
     this.health = 30;
     this.level = level || 1;
-    console.log(this.level);
   }
 
   draw(){

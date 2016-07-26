@@ -19,7 +19,7 @@ export default class Player {
     this.level = 1;
     this.damaged = false;
     this.enemiesKilled = 5;
-    this.keys=4;
+    this.keys=0;
   }
 
   getPosition(){
@@ -109,7 +109,6 @@ export default class Player {
 
   reset(){
     this.keys = 0;
-    this.health = this.maxHealth;
     this.enemiesKilled = 0;
   }
 

@@ -4,6 +4,8 @@ var Cell = require('../components/Cell');
 var Inventory = require('../components/Inventory');
 var GameDisplay = require('../components/GameDisplay');
 var PlayerDisplay = require('../components/PlayerDisplay');
+var EndGame = require('../components/EndGame');
+var ContinueGame = require('../components/ContinueGame');
 import Enemy from './Enemy';
 import Potion from './Potion';
 import Key from './Key';
@@ -11,6 +13,16 @@ import Weapon from './Weapon';
 import WeaponFactory from './WeaponFactory';
 
 var GameContainer = React.createClass({
+  contextTypes:{
+    router: React.PropTypes.object.isRequired
+  },
+
+  getInitialState: function(){
+    return({
+      gameOver: false,
+      showContinue: false
+    });
+  },
 
   componentWillMount: function(){
     this.createNewGame();
@@ -27,9 +39,41 @@ var GameContainer = React.createClass({
     this.checkCollisions();
     this.board[newPosition.y][newPosition.x] = this.player.draw();
     if (this.isLevelComplete()){
-      this.startLevel();
+      this.endLevel();
+    }
+
+    if (this.player.isDead()){
+      this.gameOver();
     }
     this.forceUpdate();
+  },
+
+  endLevel: function(){
+    clearInterval(this.game);
+    this.setState({
+      showContinue: true
+    });
+  },
+
+  handleEndGameClick: function(e){
+    this.setState({
+      gameOver: false
+    });
+    if (e.currentTarget.class == 'start'){
+      this.createNewGame();
+    }
+    else{
+      this.context.router.push({
+        pathname: '/'
+      });
+    }
+  },
+
+  gameOver: function(){
+    clearInterval(this.game);
+    this.setState({
+      gameOver: true
+    });
   },
 
   isLevelComplete: function(){
@@ -49,6 +93,11 @@ var GameContainer = React.createClass({
     this.player.setPosition(this.DIM/2, this.DIM/2);
     var playerPosition = this.player.getPosition();
     this.board[playerPosition.y][playerPosition.x] = this.player.draw();
+    this.startUpdate();
+    this.setState({
+      showContinue: false,
+      gameOver: false
+    });
   },
 
   updateEnemies: function(){
@@ -141,22 +190,14 @@ var GameContainer = React.createClass({
 
   createNewGame: function(){
     this.DIM = 80;
-    this.board = this.createBoard(this.DIM,this.DIM);
-    this.objects = [];
-    this.level = 1;
-    this.createWalls();
-    this.createEnemies();
-    this.createItems();
-    this.createWeapon();
+    this.level = 0;
     this.player = new Player(this.DIM);
-    this.objects.push(this.player);
-    var playerPosition = this.player.getPosition();
-    this.board[playerPosition.y][playerPosition.x] = this.player.draw();
-    this.startGame();
+    this.showModal = false;
+    this.startLevel();
   },
 
   createWeapon(){
-    this.createType(Weapon, 1, WeaponFactory.getTypeObject('sword'));
+    this.createType(Weapon, 1, WeaponFactory.getRandomWeapon());
   },
 
   createType(type, num, arg1){
@@ -208,7 +249,7 @@ var GameContainer = React.createClass({
     this.createType(Enemy, N_ENEMIES, this.level);
   },
 
-  startGame: function(){
+  startUpdate: function(){
     this.game = setInterval(this.update, 50);
   },
 
@@ -281,7 +322,7 @@ var GameContainer = React.createClass({
       flash='flash';
     }
     return(
-      <div className={flash}>
+      <div className={flash+ ' my-game'} >
         <GameDisplay
             totalKeys = {this.totalKeys}
             keysFound = {this.player.getKeys()}
@@ -298,6 +339,8 @@ var GameContainer = React.createClass({
           {this.getDrawBoard(this.board)}
         </div>
         <Inventory items= {this.player.getItems()} onItemClick={this.handleItemClick}/>
+        <EndGame show={this.state.gameOver} close={this.handleEndGameClick}/>
+        <ContinueGame show={this.state.showContinue} close={this.startLevel}/>
       </div>
     )
   }
