@@ -17,6 +17,10 @@ var GameContainer = React.createClass({
     router: React.PropTypes.object.isRequired
   },
 
+  componentWillUnmount: function(){
+    clearInterval(this.game);
+  },
+
   getInitialState: function(){
     return({
       gameOver: false,
@@ -59,7 +63,8 @@ var GameContainer = React.createClass({
     this.setState({
       gameOver: false
     });
-    if (e.currentTarget.class == 'start'){
+    console.log(e.currentTarget.className);
+    if (e.currentTarget.className == 'start'){
       this.createNewGame();
     }
     else{
@@ -191,7 +196,7 @@ var GameContainer = React.createClass({
   createNewGame: function(){
     this.DIM = 80;
     this.level = 0;
-    this.player = new Player(this.DIM);
+    this.player = new Player(this.DIM,this.props.location.query.player);
     this.showModal = false;
     this.startLevel();
   },

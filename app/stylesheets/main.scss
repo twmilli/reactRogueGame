@@ -5,7 +5,7 @@ $empty: white;
 $obstacle: rgb(143, 147, 143);
 $enemy: rgb(246, 57, 57);
 
-$cell: 1rem;
+$cell: 1.1rem;
 $game: $cell*40;
 
 $border: 5px solid black;
@@ -27,6 +27,7 @@ body{
   height: $game;
   border: $border;
   margin-right: 5rem;
+  margin-top: -1rem;
 }
 
 .empty{
@@ -37,19 +38,35 @@ body{
   background-color: $empty;
 }
 
-.player{
+.king{
   @extend .empty;
-  background-color: $player;
+  content: url('../assets/king.png');
+}
+.wizard{
+  @extend .empty;
+  content: url('../assets/wizard.png');
+}
+.knight{
+  @extend .empty;
+  content: url('../assets/knight.png');
+}
+.queen{
+  @extend .empty;
+  content: url('../assets/queen.png');
+}
+.princess{
+  @extend .empty;
+  content: url('../assets/princess.png');
 }
 
 .enemy{
   @extend .empty;
-  background-color: $enemy;
+  content: url('../assets/enemy.png');
 }
 
 .obstacle{
   @extend .empty;
-  background-color: $obstacle;
+    content: url('../assets/wall.png');
 }
 
 .potion{
@@ -102,7 +119,7 @@ body{
   float: left;
   text-align: left;
   border:$border;
-  height: $inventory + 5rem;
+  min-height: $inventory + 1rem;
   margin: 1rem;
 
   .item{
@@ -153,18 +170,17 @@ body{
 
 .player-display{
   @extend .inventory;
-  height: $inventory;
+  min-height: $inventory - 2rem;
   .label{
     padding: 1rem;
   }
 
   .bar{
     padding: 1rem;
-    width: 10rem;
+    max-width: 10rem;
   }
   .progressbar-container{
     outline: 1px solid black;
-    width: 100%;
   }
 }
 
@@ -234,4 +250,75 @@ body{
   text-align: center;
   vertical-align: center;
   padding-top: 20%;
+}
+
+.start-screen{
+  color: white;
+  background-color: black;
+  /* Set rules to fill background */
+  min-height: 100%;
+  min-width: 1024px;
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+    .background{
+      display: block;
+      margin: auto;
+      width: 50%;
+      text-align: center;
+    }
+    button{
+      font-size: 1.5rem;
+      background: none;
+      color: white;
+      border: 1px white solid;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      position: absolute;
+      width: 20%;
+      margin: auto;
+      bottom: 30%;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      &:hover, &:active{
+        background-color: white;
+        color: black;
+      }
+    }
+}
+
+.characters{
+  text-align: center;
+}
+
+.character{
+  display: inline-block;
+  input[type='radio']{
+    display: none;
+  }
+
+  input[type='radio']:checked + label{
+    img{
+      background-color: rgb(157, 252, 106);
+    }
+  }
+
+  label{
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+    background-color: black;
+    img{
+      background-color: white;
+      width: 8rem;
+      display: inline-block;
+      height: 8rem;
+      margin: 1rem;
+      padding: 0.5rem;
+    }
+  }
 }

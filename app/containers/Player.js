@@ -5,21 +5,22 @@ import WeaponFactory from './WeaponFactory';
 
 
 export default class Player {
-  constructor(bounds) {
+  constructor(bounds, character) {
     this.position={
       x: bounds/2,
       y: bounds/2};
-    this.health = 100;
-    this.maxHealth = 100;
+    this.health = 50;
+    this.maxHealth = 50;
     this.bounds = bounds;
     this.weapon = WeaponFactory.create('fist');
-    this.attack = 10;
+    this.attack = 5;
     this.items=[];
     this.experience = 0;
     this.level = 1;
     this.damaged = false;
-    this.enemiesKilled = 5;
+    this.enemiesKilled = 0;
     this.keys=0;
+    this.character = character || 'knight';
   }
 
   getPosition(){
@@ -27,7 +28,7 @@ export default class Player {
   }
 
   draw(){
-    return(<Cell type='player' key={this.position.x+this.position.y*this.bounds} />)
+    return(<Cell type='player' character={this.character} key={this.position.x+this.position.y*this.bounds} />)
   }
 
   move(dir, board){

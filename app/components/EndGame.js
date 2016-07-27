@@ -6,7 +6,7 @@ var EndGame = function(props){
       <div className="overlay">
         <div className='contents'>
           <div>You Died!</div>
-          <button className='start' conClick={props.close}>Restart</button>
+          <button className='start' onClick={props.close}>Restart</button>
           <button className='quit' onClick={props.close}>Quit</button>
         </div>
       </div>
