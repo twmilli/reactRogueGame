@@ -21,6 +21,7 @@ export default class Player {
     this.enemiesKilled = 0;
     this.keys=0;
     this.character = character || 'knight';
+    this.bossKilled = 0;
   }
 
   getPosition(){
@@ -74,7 +75,7 @@ export default class Player {
   }
 
   onCollision(obj){
-    if(obj.constructor.name == "Enemy"){
+    if(obj.constructor.name == "Enemy" || obj.constructor.name == "Boss"){
       this.health -= obj.getAttack();
       this.damaged = true;
     }
@@ -98,19 +99,26 @@ export default class Player {
   isDead(){
     return (this.health <= 0);
   }
-  giveExperience(level){
-    this.enemiesKilled += 1;
-    const FACTOR = 10;
-    this.experience += level * FACTOR;
-    if (this.experience > this.getExperienceNeeded()){
-      this.experience -= this.getExperienceNeeded();
-      this.levelUp();
+  giveExperience(obj){
+    if (obj.constructor.name == 'Boss'){
+      this.bossKilled += 1;
+    }
+    else if (obj.constructor.name == 'Enemy'){
+      var level = obj.getLevel();
+      this.enemiesKilled += 1;
+      const FACTOR = 10;
+      this.experience += level * FACTOR;
+      if (this.experience > this.getExperienceNeeded()){
+        this.experience -= this.getExperienceNeeded();
+        this.levelUp();
+      }
     }
   }
 
   reset(){
     this.keys = 0;
     this.enemiesKilled = 0;
+    this.bossKilled =0;
   }
 
   levelUp(){
@@ -145,5 +153,9 @@ export default class Player {
   setPosition(x,y){
     this.position.x = x;
     this.position.y = y;
+  }
+
+  getBossKilled(){
+    return this.bossKilled;
   }
 }

@@ -11,6 +11,15 @@ var GameDisplay = React.createClass({
   },
 
   render: function(){
+    var boss=null;
+    if (this.props.totalBoss > 0){
+      boss = (
+      <div className="label">
+        <div className="boss"></div>{this.props.bossKilled}/{this.props.totalBoss}
+      </div>
+    );
+    }
+
     return(
       <div className='game-display'>
         <div className='label'>Level: {this.props.level}</div>
@@ -21,6 +30,7 @@ var GameDisplay = React.createClass({
         <div className='label'>
           <div className='enemy'></div> {this.props.enemiesKilled}/{this.props.totalEnemies}
         </div>
+          {boss}
       </div>
     )
   }

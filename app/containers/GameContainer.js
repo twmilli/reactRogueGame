@@ -11,6 +11,7 @@ import Potion from './Potion';
 import Key from './Key';
 import Weapon from './Weapon';
 import WeaponFactory from './WeaponFactory';
+import Boss from './Boss';
 
 var GameContainer = React.createClass({
   contextTypes:{
@@ -54,16 +55,23 @@ var GameContainer = React.createClass({
 
   endLevel: function(){
     clearInterval(this.game);
-    this.setState({
-      showContinue: true
-    });
+    if (this.level == 3){
+      this.setState({
+        gameOver: true,
+        message: 'You Won!'
+      });
+    }
+    else{
+      this.setState({
+        showContinue: true
+      });
+    }
   },
 
   handleEndGameClick: function(e){
     this.setState({
       gameOver: false
     });
-    console.log(e.currentTarget.className);
     if (e.currentTarget.className == 'start'){
       this.createNewGame();
     }
@@ -77,12 +85,18 @@ var GameContainer = React.createClass({
   gameOver: function(){
     clearInterval(this.game);
     this.setState({
-      gameOver: true
+      gameOver: true,
+      message: 'You Died!'
     });
   },
 
   isLevelComplete: function(){
-    return ((this.player.getEnemiesKilled() == this.totalEnemies) && (this.totalKeys == this.player.getKeys()));
+    return ((this.player.getEnemiesKilled() >= this.totalEnemies) && (this.totalKeys <= this.player.getKeys()));
+  },
+
+  createBoss: function(){
+    this.totalBoss = 1;
+    this.createType(Boss, 1);
   },
 
   startLevel: function(){
@@ -94,6 +108,9 @@ var GameContainer = React.createClass({
     this.createEnemies();
     this.createItems();
     this.createWeapon();
+    if (this.level == 3){
+      this.createBoss();
+    }
     this.objects.push(this.player);
     this.player.setPosition(this.DIM/2, this.DIM/2);
     var playerPosition = this.player.getPosition();
@@ -107,7 +124,8 @@ var GameContainer = React.createClass({
 
   updateEnemies: function(){
     for (var i=0; i< this.objects.length; i++){
-      if (this.objects[i].constructor.name == "Enemy"){
+      var type = this.objects[i].constructor.name;
+      if (type == "Enemy" || type == "Boss"){
         var currEnemy = this.objects[i];
         var pos = currEnemy.getPosition();
         this.board[pos.y][pos.x] = <Cell type='empty' key={this.getKey(pos)} />
@@ -137,7 +155,7 @@ var GameContainer = React.createClass({
               this.gameOver();
             }
             else{
-              this.player.giveExperience(obj.getLevel());
+              this.player.giveExperience(obj);
             }
           }
         }
@@ -196,6 +214,7 @@ var GameContainer = React.createClass({
   createNewGame: function(){
     this.DIM = 80;
     this.level = 0;
+    this.totalBoss = 0;
     this.player = new Player(this.DIM,this.props.location.query.player);
     this.showModal = false;
     this.startLevel();
@@ -222,8 +241,8 @@ var GameContainer = React.createClass({
   },
 
   createWalls(){
-    var N_WALLS = 15 * this.level;
-    var MAX_SIZE = 10;
+    var N_WALLS = 30 * this.level;
+    var MAX_SIZE = 8;
     for (var i=0; i < N_WALLS; i++){
       var directions=[{x: 1, y:0}, {x: 0, y:1}];
       var dir = directions[Math.floor(Math.random() * directions.length)];
@@ -259,8 +278,8 @@ var GameContainer = React.createClass({
   },
 
   getDrawBoard: function(board){
-    var drawBoard=[];
     var bounds = this.getBounds();
+    var drawBoard = [];
     for (var i=bounds.minY; i < bounds.maxY; i++){
       drawBoard = drawBoard.concat(board[i].slice(bounds.minX, bounds.maxX));
     }
@@ -268,8 +287,8 @@ var GameContainer = React.createClass({
   },
 
   getBounds: function(){
-    var WIDTH = 40;
-    var HEIGHT = 40;
+    var WIDTH = 30;
+    var HEIGHT = 30;
     var pos =  this.player.getPosition();
     var minX = pos.x - WIDTH/2;
     var maxX = pos.x + WIDTH/2;
@@ -333,7 +352,9 @@ var GameContainer = React.createClass({
             keysFound = {this.player.getKeys()}
             level={this.level}
             enemiesKilled={this.player.getEnemiesKilled()}
-            totalEnemies={this.totalEnemies}/>
+            totalEnemies={this.totalEnemies}
+            totalBoss = {this.totalBoss}
+            bossKilled={this.player.getBossKilled()}/>
         <PlayerDisplay health={this.player.getHealth()}
           maxHealth={this.player.getMaxHealth()}
           weapon = {this.player.getWeapon().toString()}
@@ -344,8 +365,8 @@ var GameContainer = React.createClass({
           {this.getDrawBoard(this.board)}
         </div>
         <Inventory items= {this.player.getItems()} onItemClick={this.handleItemClick}/>
-        <EndGame show={this.state.gameOver} close={this.handleEndGameClick}/>
-        <ContinueGame show={this.state.showContinue} close={this.startLevel}/>
+        <EndGame show={this.state.gameOver} close={this.handleEndGameClick} message={this.state.message}/>
+        <ContinueGame show={this.state.showContinue} level={this.level} close={this.startLevel}/>
       </div>
     )
   }

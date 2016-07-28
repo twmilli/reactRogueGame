@@ -36,10 +36,14 @@ var StartScreen = React.createClass({
   },
   render: function(){
     var Characters = this.characters.map(function(character, key){
-              console.log(character);
+      var checked = null;
+      if (character.name == 'knight'){
+        checked=true;
+      }
       return(
       <div className="character" key={key}>
-        <input type="radio" name='char' id={character.name} value={character.name}/>
+        <input type="radio" name='char' id={character.name} value={character.name}
+          defaultChecked={checked}/>
         <label htmlFor={character.name}>
             <img src={character.src} alt=""/>
         </label>

@@ -5,8 +5,8 @@ $empty: white;
 $obstacle: rgb(143, 147, 143);
 $enemy: rgb(246, 57, 57);
 
-$cell: 1.1rem;
-$game: $cell*40;
+$cell: 1.4rem;
+$game: $cell*30;
 
 $border: 5px solid black;
 $inventory: 20rem;
@@ -36,6 +36,16 @@ body{
   width: $cell;
   height: $cell;
   background-color: $empty;
+}
+
+.black{
+  @extend .empty;
+  background-color: black;
+}
+
+.boss{
+  @extend .empty;
+  content: url('../assets/boss.png');
 }
 
 .king{

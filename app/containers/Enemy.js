@@ -13,8 +13,8 @@ export default class Enemy{
     this.dir = 1;
     this.speed = 1;
     this.time = Date.now();
-    this.attack = 10;
-    this.health = 30;
+    this.attack = 8;
+    this.health = 25;
     this.level = level || 1;
   }
 
@@ -57,7 +57,7 @@ export default class Enemy{
   }
 
   getAttack(){
-    return (this.attack);
+    return (this.attack*this.level);
   }
 
   getLevel(){
