@@ -1,7 +1,7 @@
 # reactRogueGame
 Game made with react as part of FCC curriculum
 
-http://twmilli.github.io/React-Game-Of-Life/
+http://twmilli.github.io/reactRogueGame/
 
 ##To Do:
 * sound effects?
