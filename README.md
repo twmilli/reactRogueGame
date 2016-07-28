@@ -3,7 +3,7 @@ Game made with react as part of FCC curriculum
 
 http://twmilli.github.io/React-Game-Of-Life/
 
-To Do:
+To Do:\n
 sound effects?
 move classes to model folder
 make the game harder
