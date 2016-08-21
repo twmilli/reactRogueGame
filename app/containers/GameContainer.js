@@ -12,6 +12,7 @@ import Key from './Key';
 import Weapon from './Weapon';
 import WeaponFactory from './WeaponFactory';
 import Boss from './Boss';
+import Directions from '../components/Directions'
 
 var GameContainer = React.createClass({
   contextTypes:{
@@ -25,7 +26,14 @@ var GameContainer = React.createClass({
   getInitialState: function(){
     return({
       gameOver: false,
-      showContinue: false
+      showContinue: false,
+      dir: true
+    });
+  },
+
+  handleDirectionClick: function(){
+    this.setState({
+      dir: false
     });
   },
 
@@ -367,6 +375,7 @@ var GameContainer = React.createClass({
         <Inventory items= {this.player.getItems()} onItemClick={this.handleItemClick}/>
         <EndGame show={this.state.gameOver} close={this.handleEndGameClick} message={this.state.message}/>
         <ContinueGame show={this.state.showContinue} level={this.level} close={this.startLevel}/>
+        <Directions show={this.state.dir} close = {this.handleDirectionClick} />
       </div>
     )
   }
